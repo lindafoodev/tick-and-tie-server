@@ -6,6 +6,7 @@ mongoose.Promise = global.Promise;
 const { DATABASE_URL } = require('./config');
 
 function dbConnect(url = DATABASE_URL) {
+  console.log('hi I am connected to', url);
   return mongoose.connect(url)
     .catch(err => {
       console.error('Mongoose failed to connect');

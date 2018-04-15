@@ -1,0 +1,16 @@
+{
+  "set1": [
+    {
+    "sideA": "What does P2P stand for?",
+    "sideB": "peer to peer"
+    },
+    {
+      "sideA": "Where do you store your cryptocurrency?",
+      "sideB": "wallet"
+    },
+    {
+      "sideA":"Fill in the blank. Blockchain is a _________ ledger on a peer to peer network.",
+      "sideB": "distributed"
+    }          
+  ]
+}
