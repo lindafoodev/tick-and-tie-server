@@ -123,7 +123,7 @@ router.post('/', jsonParser, (req, res) => {
 			return User.create({
 				username,
 				password: hash,
-				deck
+				set
 			});
 		})
 		.then(user => {
