@@ -13,15 +13,26 @@ const UserSchema = mongoose.Schema({
 		type: String,
 		required: true
 	},
-	set: [{
-		deck1: { type: String } 
-	}],
+	deck: [{
+		sideA: {type: String, required: true},
+		sideB: {type: String, required: true},
+		nValue: {type: Number, default: 1, required: true},
+		nextCard: {type: Number},
+		currentCard: {type: Number, default: 0},
+		correctCount: {type: Number, default: 0},
+		incorrectCount: {type: Number, default: 0}
+	}]
 });
 
 UserSchema.methods.serialize = function() {
 	return {
+		id: this._id,
 		username: this.username,
-		set: this.set 
+		deck: this.deck,
+		nextCard: this.nextCard,
+		currentCard: this.currentCard,
+		correctCount: this.correctCount,
+		incorrectCount: this.incorrectCount
 	};
 };
 

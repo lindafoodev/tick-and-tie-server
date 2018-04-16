@@ -104,9 +104,6 @@ router.post('/', jsonParser, (req, res) => {
 	let {username, password} = req.body;
 	// Username and password come in pre-trimmed, otherwise we throw an error
 	// before this
-	console.log(req.body);
-	let newSet = Deck.find({});
-
 	return User.find({username})
 		.count()
 		.then(count => {
@@ -123,12 +120,31 @@ router.post('/', jsonParser, (req, res) => {
 			return User.hashPassword(password);
 		})
 		.then(hash => {
-			return User.create({
-				username,
-				password: hash,
-				set: newSet
-			});
-		})
+			const list = [];
+
+			Deck
+				.find()
+				.then(cards => {
+					for (let i = 0; i < cards.length; i++){
+						list.push({
+							sideA: cards[i].sideA,
+							sideB: cards[i].sideB,
+							nValue: 1, 
+							nextCard: i+1 > cards.length - 1 ? null : i+1
+						});
+					}
+					return list;
+			})
+			.then(list => {
+				return User.create({
+					username,
+					password: hash,
+					deck: list,
+					currentCard: 0,
+					correctCount: 0,
+					incorrectCount: 0
+				});
+			})
 		.then(user => {
 			return res.status(201).json(user.serialize());
 		})
@@ -141,19 +157,16 @@ router.post('/', jsonParser, (req, res) => {
 			}
 			res.status(500).json({code: 500, message: 'Internal server error'});
 		});
+	});
 });
 
-router.get('/:id', jwtAuth, (req, res) => {
+router.get('/:id', (req, res) => {
 	//by id
 	let id = req.params.id;
-	if (req.params.id === 'self'){
-	  id = req.user.id;
-	  console.log(req.user);
-	}
-	return User.findById(id)
+	User.findById(id)
 		.then(user => {
 			console.log(user);
-			res.json(user);
+			res.json(user.deck[user.currentCard]);
 		})
 		.catch(err => res.status(500).json({message: 'Internal server error'}));
 });
@@ -164,6 +177,47 @@ router.get('/', (req, res) => {
 	return User.find({})
 		.then(user => res.json(user))
 		.catch(err => res.status(500).json({message: 'Internal server error'}));
+});
+
+router.put('/:id', jsonParser, (req, res) => {
+	let id = req.params.id;
+  User
+    .findById(id)
+    .then(result => {
+      let currentCard = result.deck[result.currentCard];
+      let currentIndex = result.currentCard;
+      let n;
+      if (req.body.correctCount) {
+        n = result.deck[currentIndex].nValue * 2;
+        result.deck[currentIndex].nValue = n;
+        result.correctCount++;
+      } else {
+        n = 1;
+        result.deck[currentIndex].nValue = n;
+        result.incorrectCount++;
+      }
+      result.currentCount = currentCard.nextCard;
+
+      for (let i=0; i<m; i++) {
+        currentCard = result.deck[currentCard.nextCard];
+        if (currentCard.nextCard === null) {
+          result.deck[currentIndex].nextCard = null;
+          current.nextCard = currentIndex;
+          return result;
+        }
+      }
+      result.deck[currentIndex].nextCard = currentCard.nextCard;
+      currentCard.nextCard = currentIndex;  
+      return result;
+    })
+    .then(result => {
+      User
+        .findByIdAndUpdate(id, {currentCard: result.currentCard, deck: result.deck, correctCount: result.correctCount, incorrectCount: result.incorrectCount}, {new: true})
+        .then(updated => {
+          res.status(200).json(updated.deck[updated.currentCard]);
+        })
+        .catch(err => console.error(err));
+    });
 });
 
 module.exports = {router};
