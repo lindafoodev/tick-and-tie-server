@@ -14,7 +14,7 @@ const UserSchema = mongoose.Schema({
 		required: true
 	},
 	set: [{
-		deck1: { type: String } //QUEST
+		deck1: { type: String } 
 	}],
 });
 

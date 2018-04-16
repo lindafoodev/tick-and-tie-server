@@ -3,6 +3,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const passport = require('passport');
 
+const { Deck } = require('../v1/models');
 const { User } = require('./models');
 const { localStrategy, jwtStrategy } = require('../auth/strategies');
 
@@ -104,6 +105,8 @@ router.post('/', jsonParser, (req, res) => {
 	// Username and password come in pre-trimmed, otherwise we throw an error
 	// before this
 	console.log(req.body);
+	let newSet = Deck.find({});
+
 	return User.find({username})
 		.count()
 		.then(count => {
@@ -123,7 +126,7 @@ router.post('/', jsonParser, (req, res) => {
 			return User.create({
 				username,
 				password: hash,
-				set
+				set: newSet
 			});
 		})
 		.then(user => {
