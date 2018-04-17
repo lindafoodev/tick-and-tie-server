@@ -184,6 +184,7 @@ router.put('/:id', jsonParser, (req, res) => {
   User
     .findById(id)
     .then(result => {
+			console.log('what is result', result);
       let currentCard = result.deck[result.currentCard];
       let currentIndex = result.currentCard;
       let n;
@@ -196,13 +197,15 @@ router.put('/:id', jsonParser, (req, res) => {
         result.deck[currentIndex].nValue = n;
         result.incorrectCount++;
       }
-      result.currentCount = currentCard.nextCard;
-
-      for (let i=0; i<m; i++) {
-        currentCard = result.deck[currentCard.nextCard];
+      result.currentCard = currentCard.nextCard;
+			console.log('what is result.currentCount', result.currentCard);
+			console.log('what is what', currentCard.nextCard);
+      for (let i=0; i<n; i++) {
+				currentCard = result.deck[currentCard.nextCard];
+				console.log('what is currentCardin loop', currentCard);
         if (currentCard.nextCard === null) {
           result.deck[currentIndex].nextCard = null;
-          current.nextCard = currentIndex;
+          currentCard.nextCard = currentIndex;
           return result;
         }
       }
@@ -211,6 +214,7 @@ router.put('/:id', jsonParser, (req, res) => {
       return result;
     })
     .then(result => {
+			console.log('what is result now', result);
       User
         .findByIdAndUpdate(id, {currentCard: result.currentCard, deck: result.deck, correctCount: result.correctCount, incorrectCount: result.incorrectCount}, {new: true})
         .then(updated => {
