@@ -18,10 +18,10 @@ const UserSchema = mongoose.Schema({
 		sideB: {type: String, required: true},
 		nValue: {type: Number, default: 1, required: true},
 		nextCard: {type: Number},
-		currentCard: {type: Number, default: 0},
-		correctCount: {type: Number, default: 0},
-		incorrectCount: {type: Number, default: 0}
-	}]
+	}],
+	currentCard: {type: Number, default: 0},
+	correctCount: {type: Number, default: 0},
+	incorrectCount: {type: Number, default: 0}
 });
 
 UserSchema.methods.serialize = function() {
