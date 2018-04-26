@@ -2,6 +2,8 @@
 const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
+
+//model for flashcard deck
 const DeckSchema = mongoose.Schema ({
 	sideA: { type: String, required: true },
 	sideB: { type: String, required: true },
