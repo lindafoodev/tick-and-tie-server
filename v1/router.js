@@ -24,32 +24,4 @@ router.get('/:id', (req, res) => {
 		});
 });
 
-router.post('/', jsonParser, (req, res) => {
-	const requiredFields = ['sideA', 'sideB', 'nValue'];
-	
-	for(let i = 0; i < requiredFields.length; i++){
-		const missingField = requiredFields.find(field => !(field in req.body));
-
-		if (missingField) {
-			console.log('missing field = ', missingField);
-			return res.status(400).json({
-				code: 400,
-				reason: 'ValidationError',
-				message: 'Missing field',
-				location: missingField
-			});
-		}
-	}
-
-	Deck.create({
-		sideA: req.body.sideA,
-		sideB: req.body.sideB,
-		nValue: req.body.nValue
-	})
-	.then(card => res.status(201).json(card.serialize()))
-	.catch(err => {
-		console.error(error);
-	});
-})
-
 module.exports = { router };

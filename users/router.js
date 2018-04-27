@@ -18,7 +18,7 @@ const jwtAuth = passport.authenticate('jwt', { session: false });
 
 // Post to register a new user
 router.post('/', jsonParser, (req, res) => {
-	console.log('Enter users/ POST ', req.body);
+
 	const requiredFields = ['username', 'password'];
 	const missingField = requiredFields.find(field => !(field in req.body));
 
@@ -172,8 +172,6 @@ router.get('/:id', (req, res) => {
 });
 
 router.get('/', (req, res) => {
-	console.log('enter get all user endpoint');
-	//all users
 	return User.find({})
 		.then(user => res.json(user))
 		.catch(err => res.status(500).json({message: 'Internal server error'}));
@@ -184,7 +182,7 @@ router.put('/:id', jsonParser, (req, res) => {
   User
     .findById(id)
     .then(result => {
-			console.log('what is result', result);
+			//console.log('what is result', result);
       let currentCard = result.deck[result.currentCard];
       let currentIndex = result.currentCard;
       let n;
@@ -198,11 +196,11 @@ router.put('/:id', jsonParser, (req, res) => {
         result.incorrectCount++;
       }
       result.currentCard = currentCard.nextCard;
-			console.log('what is result.currentCount', result.currentCard);
-			console.log('what is what', currentCard.nextCard);
+			//console.log('what is result.currentCount', result.currentCard);
+			//console.log('what is what', currentCard.nextCard);
       for (let i=0; i<n; i++) {
 				currentCard = result.deck[currentCard.nextCard];
-				console.log('what is currentCardin loop', currentCard);
+				//console.log('what is currentCardin loop', currentCard);
         if (currentCard.nextCard === null) {
           result.deck[currentIndex].nextCard = null;
           currentCard.nextCard = currentIndex;
@@ -214,7 +212,7 @@ router.put('/:id', jsonParser, (req, res) => {
       return result;
     })
     .then(result => {
-			console.log('what is result now', result);
+			//console.log('what is result now', result);
       User
         .findByIdAndUpdate(id, {currentCard: result.currentCard, deck: result.deck, correctCount: result.correctCount, incorrectCount: result.incorrectCount}, {new: true})
         .then(updated => {

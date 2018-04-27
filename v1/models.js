@@ -14,7 +14,6 @@ DeckSchema.methods.serialize = function() {
 		id: this._id,
 		sideA: this.sideA,
 		sideB: this.sideB,
-		nValue: this.nValue
 	};
 };
 
